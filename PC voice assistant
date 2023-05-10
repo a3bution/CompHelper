@@ -1,0 +1,75 @@
+import os
+import webbrowser
+import speech_recognition as sr
+import subprocess
+
+r = sr.Recognizer()
+
+
+
+print("Ваш запрос?")
+
+def launch_application(application_name):
+    try:
+        os.startfile(application_name)
+    except Exception as e:
+        print(e)
+
+
+def open_browser():
+    os.startfile('C:\\Users\\nikdo\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe')
+
+
+def play_music():
+    try:
+        os.startfile('C:\\Users\\nikdo\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe')
+        webbrowser.open('https://music.yandex.ru/users/a3bution/playlists')
+    except Exception as e:
+        print(e)
+
+def open_dota():
+    try:
+        os.startfile('F:\\Program Files (x86)\\Steam\\steamapps\\common\\dota 2 beta\\game\\bin\\win64\\dota2.exe')
+    except Exception as e:
+        print(e)
+
+def play_video_on_youtube():
+    webbrowser.open('https://www.youtube.com/')
+
+def close_browser():
+    os.system("taskkill /browser.exe")
+
+
+def process_audio():
+    with sr.Microphone() as source:
+        audio = r.listen(source)
+
+        try:
+
+            text = r.recognize_google(audio, language='ru-RU')
+
+
+            if 'Открой браузер' in text:
+                open_browser()
+            elif 'Открой музыку' in text:
+                play_music()
+            elif 'Закрой браузер' in text:
+                subprocess.call("taskkill /f /im browser.exe", shell=True)
+            elif 'Открой YouTube' in text:
+                play_video_on_youtube()
+            elif 'запусти Dota' in text:
+                open_dota()
+            elif 'Выключись' in text:
+                print("Выключаюсь...")
+                exit()
+            else:
+                print("Извините, я не понял вашего запроса.")
+
+        except sr.UnknownValueError:
+            print("Извините, я не распознал вашу речь.")
+        except sr.RequestError as e:
+            print("Ошибка сервиса распознавания речи; {0}".format(e))
+
+
+while True:
+    process_audio()
